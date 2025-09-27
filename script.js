@@ -1,152 +1,230 @@
-// script.js
+// Global variables
+let resultHistory = JSON.parse(localStorage.getItem('resultHistory')) || [];
 
-// ---------- CLOCK ----------
-function updateClock() {
-    const clockEl = document.getElementById('clock');
-    const now = new Date();
-    const timeStr = now.toLocaleTimeString('en-GB'); // HH:MM:SS
-    clockEl.textContent = timeStr;
-}
-setInterval(updateClock, 1000);
-updateClock();
+// Manual draw schedule
+const manualDraws = [
+    { time: '09:00:00', numbers: { '2D': '42', '3D': '123' } },
+    { time: '12:00:00', numbers: { '2D': '17', '3D': '456' } },
+    { time: '15:00:00', numbers: { '2D': '89', '3D': '789' } },
+    { time: '18:00:00', numbers: { '2D': '33', '3D': '012' } },
+    { time: '21:00:00', numbers: { '2D': '56', '3D': '345' } }
+];
 
-// ---------- USER DATA ----------
-let users = JSON.parse(localStorage.getItem('users')) || {};
-let currentUser = JSON.parse(localStorage.getItem('currentUser')) || null;
-
-function updateUserUI() {
-    if (currentUser) {
-        document.getElementById('username').textContent = currentUser.username;
-        document.getElementById('balance').textContent = `${currentUser.balance} 🪙`;
-        document.getElementById('vipBadge').textContent = currentUser.vipLevel;
-        if (currentUser.profileImg) {
-            document.getElementById('profileImg').src = currentUser.profileImg;
-        }
-    }
-}
-updateUserUI();
-
-// ---------- PROFILE IMAGE UPLOAD ----------
-document.getElementById('upload').addEventListener('change', function (e) {
-    const file = e.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function (ev) {
-            document.getElementById('profileImg').src = ev.target.result;
-            currentUser.profileImg = ev.target.result;
-            saveUserData();
-        }
-        reader.readAsDataURL(file);
+// Initialize
+document.addEventListener('DOMContentLoaded', function() {
+    updateClock();
+    setInterval(updateClock, 1000);
+    
+    if (window.location.pathname.includes('index.html') || window.location.pathname === '/') {
+        startLotteryAnimation();
+        checkManualDraws();
+        setInterval(checkManualDraws, 1000);
+        displayResultHistory();
     }
 });
 
-// ---------- MANUAL DRAWS ----------
-let manualDraws = [
-    { start: '00:00:05', stop: '00:00:10', fixed2: 12, fixed3: 345 },
-    { start: '00:00:15', stop: '00:00:20', fixed2: 45, fixed3: 678 }
-];
+// Clock function
+function updateClock() {
+    const now = new Date();
+    const timeString = now.toLocaleTimeString('en-US', { hour12: false });
+    const clockElement = document.getElementById('clock');
+    if (clockElement) {
+        clockElement.textContent = timeString;
+    }
+}
 
-let scroll2El = document.getElementById('scroll2');
-let scroll3El = document.getElementById('scroll3');
+// Lottery animation
+function startLotteryAnimation() {
+    const scroll2D = document.getElementById('scroll2D');
+    const scroll3D = document.getElementById('scroll3D');
 
-function generateNumbers(container, maxDigit, repeat = 10) {
-    container.innerHTML = '';
-    for (let r = 0; r < repeat; r++) {
-        for (let i = 0; i <= maxDigit; i++) {
-            let div = document.createElement('div');
-            div.className = 'number-item';
-            div.textContent = i.toString().padStart(maxDigit >= 100 ? 3 : 2, '0');
-            container.appendChild(div);
+    if (scroll2D) {
+        let numbers2D = '';
+        for (let i = 0; i < 20; i++) {
+            const num = Math.floor(Math.random() * 100).toString().padStart(2, '0');
+            numbers2D += `<div>${num}</div>`;
+        }
+        scroll2D.innerHTML = numbers2D;
+    }
+
+    if (scroll3D) {
+        let numbers3D = '';
+        for (let i = 0; i < 20; i++) {
+            const num = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+            numbers3D += `<div>${num}</div>`;
+        }
+        scroll3D.innerHTML = numbers3D;
+    }
+}
+
+// Manual draws
+function checkManualDraws() {
+    const now = new Date();
+    const currentTime = now.toTimeString().split(' ')[0];
+
+    manualDraws.forEach((draw) => {
+        const drawTime = new Date();
+        const [hours, minutes, seconds] = draw.time.split(':');
+        drawTime.setHours(parseInt(hours), parseInt(minutes), parseInt(seconds), 0);
+
+        const timeDiff = drawTime.getTime() - now.getTime();
+
+        if (timeDiff > 0 && timeDiff <= 60000) {
+            // Draw starting in next minute
+            updateDrawStatus('upcoming', draw.time, '--', '--');
+        } else if (timeDiff <= 0 && timeDiff > -30000) {
+            // Draw is active (30 seconds)
+            updateDrawStatus('active', draw.time, draw.numbers['2D'], draw.numbers['3D']);
+            stopScrollAnimation();
+            playDrawSound();
+        } else if (timeDiff <= -30000 && timeDiff > -60000) {
+            // Draw completed
+            updateDrawStatus('completed', draw.time, draw.numbers['2D'], draw.numbers['3D']);
+            addToResultHistory(draw.numbers['2D'], draw.numbers['3D'], draw.time);
+            if (typeof checkBetsForWinLoss === 'function') {
+                checkBetsForWinLoss(draw.numbers);
+            }
+        } else {
+            // Find next draw
+            const nextDraw = getNextDraw();
+            if (nextDraw) {
+                updateDrawStatus('upcoming', nextDraw.time, '--', '--');
+                startLotteryAnimation();
+            }
+        }
+    });
+}
+
+function getNextDraw() {
+    const now = new Date();
+    const currentTime = now.toTimeString().split(' ')[0];
+
+    for (let draw of manualDraws) {
+        if (draw.time > currentTime) {
+            return draw;
         }
     }
+    return manualDraws[0];
 }
 
-// ---------- SCROLLING ----------
-let scrollSpeed2 = 50; // ms per move
-let scrollSpeed3 = 30;
+function updateDrawStatus(status, time, number2D, number3D) {
+    const manual2D = document.getElementById('manual2D');
+    const manual3D = document.getElementById('manual3D');
 
-let scroll2Interval, scroll3Interval;
-function startScroll(el, speed) {
-    let offset = 0;
-    scroll2Interval = setInterval(() => {
-        offset -= 1;
-        el.style.transform = `translateY(${offset}px)`;
-        if (offset <= -el.scrollHeight / 10) offset = 0;
-    }, speed);
-}
-function startScroll3(el, speed) {
-    let offset = 0;
-    scroll3Interval = setInterval(() => {
-        offset -= 1;
-        el.style.transform = `translateY(${offset}px)`;
-        if (offset <= -el.scrollHeight / 10) offset = 0;
-    }, speed);
-}
+    if (manual2D) {
+        const drawTime = manual2D.querySelector('.draw-time');
+        const drawStatus = manual2D.querySelector('.draw-status');
+        const winningNumber = manual2D.querySelector('.winning-number');
 
-// ---------- STOP SCROLL ----------
-function stopScroll(el, fixedNumber) {
-    clearInterval(scroll2Interval);
-    clearInterval(scroll3Interval);
-    // Highlight
-    let items = el.querySelectorAll('.number-item');
-    items.forEach(item => item.classList.remove('highlight'));
-    let idx = fixedNumber;
-    if (fixedNumber > 99) idx = fixedNumber; // for 3-digit
-    if (items[idx]) items[idx].classList.add('highlight');
-}
+        if (drawTime) drawTime.textContent = status === 'upcoming' ? `Next Draw: ${time}` : `Draw Time: ${time}`;
+        if (drawStatus) {
+            drawStatus.textContent = status.charAt(0).toUpperCase() + status.slice(1);
+            drawStatus.className = `draw-status status-${status}`;
+        }
+        if (winningNumber) winningNumber.textContent = number2D;
+    }
 
-// ---------- RESULT HISTORY ----------
-function addResultHistory(twoDigit, threeDigit) {
-    const container = document.getElementById('resultHistory');
-    const now = new Date();
-    const row = document.createElement('div');
-    row.textContent = `${now.toLocaleTimeString()} - 2D: ${twoDigit.toString().padStart(2, '0')} | 3D: ${threeDigit.toString().padStart(3, '0')}`;
-    container.prepend(row);
-}
+    if (manual3D) {
+        const drawTime = manual3D.querySelector('.draw-time');
+        const drawStatus = manual3D.querySelector('.draw-status');
+        const winningNumber = manual3D.querySelector('.winning-number');
 
-// ---------- NOTIFICATION ----------
-function notify(msg) {
-    const el = document.getElementById('notification');
-    el.textContent = msg;
-    el.style.display = 'block';
-    setTimeout(() => { el.style.display = 'none'; }, 3000);
-}
-
-// ---------- USER DATA SAVE ----------
-function saveUserData() {
-    if (currentUser) {
-        users[currentUser.username] = currentUser;
-        localStorage.setItem('users', JSON.stringify(users));
-        localStorage.setItem('currentUser', JSON.stringify(currentUser));
-        updateUserUI();
+        if (drawTime) drawTime.textContent = status === 'upcoming' ? `Next Draw: ${time}` : `Draw Time: ${time}`;
+        if (drawStatus) {
+            drawStatus.textContent = status.charAt(0).toUpperCase() + status.slice(1);
+            drawStatus.className = `draw-status status-${status}`;
+        }
+        if (winningNumber) winningNumber.textContent = number3D;
     }
 }
 
-// ---------- RUN MANUAL DRAWS ----------
-function runManualDraws() {
-    generateNumbers(scroll2El, 99);
-    generateNumbers(scroll3El, 999);
+function stopScrollAnimation() {
+    const scroll2D = document.getElementById('scroll2D');
+    const scroll3D = document.getElementById('scroll3D');
 
-    startScroll(scroll2El, scrollSpeed2);
-    startScroll3(scroll3El, scrollSpeed3);
+    if (scroll2D) scroll2D.classList.add('stopped');
+    if (scroll3D) scroll3D.classList.add('stopped');
 
-    setInterval(() => {
-        const now = new Date();
-        const timeStr = now.toTimeString().split(' ')[0]; // HH:MM:SS
-        manualDraws.forEach(draw => {
-            if (timeStr === draw.start) {
-                startScroll(scroll2El, scrollSpeed2);
-                startScroll3(scroll3El, scrollSpeed3);
-                notify(`Draw started!`);
-            }
-            if (timeStr === draw.stop) {
-                stopScroll(scroll2El, draw.fixed2);
-                stopScroll(scroll3El, draw.fixed3);
-                addResultHistory(draw.fixed2, draw.fixed3);
-                notify(`Draw stopped! 2D:${draw.fixed2} 3D:${draw.fixed3}`);
-            }
-        });
-    }, 1000);
+    setTimeout(() => {
+        if (scroll2D) scroll2D.classList.remove('stopped');
+        if (scroll3D) scroll3D.classList.remove('stopped');
+        startLotteryAnimation();
+    }, 5000);
 }
 
-runManualDraws();
+function playDrawSound() {
+    try {
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+
+        oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+        oscillator.frequency.setValueAtTime(400, audioContext.currentTime + 0.1);
+        
+        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + 0.5);
+    } catch (e) {
+        console.log('Audio not supported');
+    }
+}
+
+// Result history
+function addToResultHistory(number2D, number3D, time) {
+    const result = {
+        '2D': number2D,
+        '3D': number3D,
+        time: time,
+        timestamp: new Date().toISOString()
+    };
+
+    resultHistory.unshift(result);
+    if (resultHistory.length > 50) {
+        resultHistory = resultHistory.slice(0, 50);
+    }
+
+    localStorage.setItem('resultHistory', JSON.stringify(resultHistory));
+    displayResultHistory();
+}
+
+function displayResultHistory() {
+    const historyContainer = document.getElementById('resultHistory');
+    if (!historyContainer) return;
+
+    historyContainer.innerHTML = '';
+
+    resultHistory.slice(0, 10).forEach(result => {
+        const historyItem = document.createElement('div');
+        historyItem.className = 'history-item';
+        historyItem.innerHTML = `
+            <span>2D: ${result['2D']} | 3D: ${result['3D']}</span>
+            <span>${result.time}</span>
+        `;
+        historyContainer.appendChild(historyItem);
+    });
+
+    if (resultHistory.length === 0) {
+        historyContainer.innerHTML = '<div class="history-item"><span>No results yet</span></div>';
+    }
+}
+
+// Notifications
+function showNotification(message, type = 'info') {
+    const notification = document.getElementById('notification');
+    const notificationMessage = document.getElementById('notificationMessage');
+    
+    if (!notification || !notificationMessage) return;
+
+    notificationMessage.textContent = message;
+    notification.className = `notification ${type}`;
+    notification.classList.add('show');
+
+    setTimeout(() => {
+        notification.classList.remove('show');
+    }, 3000);
+}
