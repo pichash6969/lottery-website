@@ -1,54 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lottery Home</title>
+    <title>Lottery System - Home</title>
     <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="betting.html">Betting</a>
+            <a href="balance.html">Balance</a>
+            <a href="leaderboard.html">Leaderboard</a>
+            <a href="login.html" id="loginLink">Login</a>
+        </div>
+    </nav>
 
-    <header>
+    <div class="container">
+        <!-- Clock -->
         <div class="clock" id="clock">00:00:00</div>
-        <div class="user-info">
-            <div class="profile-upload">
-                <img id="profileImg" src="https://via.placeholder.com/35" alt="Profile">
-                <label for="upload">Upload</label>
-                <input type="file" id="upload">
+
+        <!-- User Info -->
+        <div class="user-info" id="userInfo" style="display: none;">
+            <img src="https://via.placeholder.com/60" alt="Profile" class="profile-image" id="profileImage">
+            <div>
+                <h3 id="username">Guest</h3>
+                <p>Balance: <span id="balance">0</span> Coins</p>
+                <span class="vip-badge vip1" id="vipBadge">VIP1</span>
             </div>
-            <span id="username">Guest</span>
-            <span id="balance">0 🪙</span>
-            <span id="vipBadge" class="vip-badge">VIP1</span>
-        </div>
-    </header>
-
-    <div class="main-container">
-        <h2>2-Digit Lottery</h2>
-        <div class="scroll-container">
-            <div class="scroll-numbers" id="scroll2"></div>
         </div>
 
-        <h2>3-Digit Lottery</h2>
-        <div class="scroll-container">
-            <div class="scroll-numbers" id="scroll3"></div>
+        <!-- Lottery Containers -->
+        <div class="lottery-container">
+            <!-- 2D Lottery -->
+            <div class="lottery-box">
+                <div class="lottery-title">2D Lottery</div>
+                <div class="scroll-container">
+                    <div class="scroll-numbers" id="scroll2D"></div>
+                </div>
+                <div class="manual-draw" id="manual2D">
+                    <div class="draw-time">Next Draw: --:--:--</div>
+                    <div class="draw-status status-upcoming">Upcoming</div>
+                    <div>Winning Number: <span class="winning-number">--</span></div>
+                </div>
+            </div>
+
+            <!-- 3D Lottery -->
+            <div class="lottery-box">
+                <div class="lottery-title">3D Lottery</div>
+                <div class="scroll-container">
+                    <div class="scroll-numbers" id="scroll3D"></div>
+                </div>
+                <div class="manual-draw" id="manual3D">
+                    <div class="draw-time">Next Draw: --:--:--</div>
+                    <div class="draw-status status-upcoming">Upcoming</div>
+                    <div>Winning Number: <span class="winning-number">---</span></div>
+                </div>
+            </div>
         </div>
 
-        <div class="result-history" id="resultHistory">
+        <!-- Result History -->
+        <div class="history-box">
             <h3>Result History</h3>
-        </div>
-
-        <div class="leaderboard" id="leaderboard">
-            <h3>Leaderboard</h3>
+            <div id="resultHistory"></div>
         </div>
     </div>
 
-    <div class="notification" id="notification"></div>
+    <!-- Notification -->
+    <div class="notification" id="notification">
+        <div id="notificationMessage"></div>
+    </div>
 
     <script src="user.js"></script>
     <script src="bets.js"></script>
     <script src="script.js"></script>
 </body>
-
 </html>
