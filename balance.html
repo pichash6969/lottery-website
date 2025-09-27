@@ -1,37 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Balance</title>
+    <title>Lottery System - Balance</title>
     <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-    <header>
-        <div class="clock" id="clock">00:00:00</div>
-        <div class="user-info">
-            <img id="profileImg" src="https://via.placeholder.com/35" alt="Profile">
-            <span id="username">Guest</span>
-            <span id="balance">0 🪙</span>
-            <span id="vipBadge" class="vip-badge">VIP1</span>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="betting.html">Betting</a>
+            <a href="balance.html">Balance</a>
+            <a href="leaderboard.html">Leaderboard</a>
+            <a href="login.html" id="loginLink">Login</a>
         </div>
-    </header>
+    </nav>
 
-    <div class="main-container">
-        <h2>Your Balance</h2>
-        <div id="balanceDetails">
-            <p>Total Coins: <span id="balanceCoins">0</span> 🪙</p>
+    <!-- Balance Page -->
+    <div class="balance-page">
+        <div style="text-align: center;">
+            <img src="https://via.placeholder.com/100" alt="Profile" class="profile-image" id="balanceProfileImage" style="width: 100px; height: 100px; margin-bottom: 1rem;">
+            <h2 id="balanceUsername">Username</h2>
+            <h3>Balance: <span id="balanceAmount">0</span> Coins</h3>
+            <span class="vip-badge vip1" id="balanceVipBadge">VIP1</span>
+        </div>
+        
+        <div class="redeem-form">
+            <input type="text" id="redeemCode" placeholder="Enter redeem code">
+            <button class="btn" onclick="redeemCode()">Redeem</button>
         </div>
 
-        <h3>Redeem Code</h3>
-        <input type="text" id="redeemCode" placeholder="Enter code">
-        <button onclick="redeemCode(document.getElementById('redeemCode').value)">Redeem</button>
+        <div style="margin-top: 2rem; background: rgba(255,255,255,0.1); padding: 1rem; border-radius: 10px;">
+            <h4>Available Redeem Codes:</h4>
+            <ul style="list-style: none; padding: 0;">
+                <li>💰 WELCOME100 - 100 Coins</li>
+                <li>🍀 LUCKY50 - 50 Coins</li>
+                <li>👑 VIP200 - 200 Coins</li>
+                <li>🎁 BONUS75 - 75 Coins</li>
+                <li>⭐ GOLD300 - 300 Coins</li>
+            </ul>
+        </div>
     </div>
 
     <script src="user.js"></script>
-    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            checkLoginStatus();
+            updateBalancePage();
+        });
+    </script>
 </body>
-
 </html>
