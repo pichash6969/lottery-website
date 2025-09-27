@@ -1,24 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login / Signup</title>
+    <title>Lottery System - Login</title>
     <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-    <div class="main-container">
-        <h2>Login / Signup</h2>
-        <div>
-            <input type="text" id="loginUsername" placeholder="Enter username">
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="betting.html">Betting</a>
+            <a href="balance.html">Balance</a>
+            <a href="leaderboard.html">Leaderboard</a>
+            <a href="login.html" id="loginLink">Login</a>
         </div>
-        <button onclick="login(document.getElementById('loginUsername').value)">Login</button>
-        <button onclick="signup(document.getElementById('loginUsername').value)">Signup</button>
-    </div>
-    <script src="user.js"></script>
-    <script src="script.js"></script>
-</body>
+    </nav>
 
+    <!-- Login Page -->
+    <div class="login-container">
+        <h2 style="text-align: center; margin-bottom: 2rem;">Lottery System</h2>
+        <div class="form-group">
+            <label for="usernameInput">Username</label>
+            <input type="text" id="usernameInput" placeholder="Enter your username">
+        </div>
+        <div class="form-group">
+            <label for="profileImageInput">Profile Image URL (Optional)</label>
+            <input type="url" id="profileImageInput" placeholder="Enter image URL">
+        </div>
+        <button class="btn" onclick="login()" style="width: 100%; margin-bottom: 1rem;">Login</button>
+        <button class="btn" onclick="signup()" style="width: 100%;">Sign Up</button>
+    </div>
+
+    <script src="user.js"></script>
+    <script>
+        // Redirect if already logged in
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentUser = localStorage.getItem('currentUser');
+            if (currentUser) {
+                window.location.href = 'index.html';
+            }
+        });
+    </script>
+</body>
 </html>
