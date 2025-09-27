@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Betting</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header>
+        <div class="clock" id="clock">00:00:00</div>
+        <div class="user-info">
+            <img id="profileImg" src="https://via.placeholder.com/35" alt="Profile">
+            <span id="username">Guest</span>
+            <span id="balance">0 🪙</span>
+            <span id="vipBadge" class="vip-badge">VIP1</span>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <h2>Place Your Bets</h2>
+        <div>
+            <label>Type:</label>
+            <select id="betType">
+                <option value="2D">2-Digit</option>
+                <option value="3D">3-Digit</option>
+            </select>
+        </div>
+        <div>
+            <label>Number:</label>
+            <input type="number" id="betNumber" placeholder="Number">
+        </div>
+        <div>
+            <label>Coins:</label>
+            <input type="number" id="betAmount" placeholder="Coins">
+        </div>
+        <button onclick="placeBet(
+        document.getElementById('betType').value,
+        parseInt(document.getElementById('betNumber').value),
+        parseInt(document.getElementById('betAmount').value)
+    )">Place Bet</button>
+
+        <div class="bet-history">
+            <h3>Bet History</h3>
+        </div>
+    </div>
+
+    <script src="user.js"></script>
+    <script src="bets.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>

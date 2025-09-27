@@ -1,0 +1,157 @@
+/* style.css - Common Styles */
+body {
+    font-family: 'Courier New', monospace;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    color: #00ff00;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background: rgba(0, 0, 0, 0.8);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+header .clock {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+header .user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+header .user-info img {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    border: 2px solid #00ff00;
+}
+
+header .user-info span {
+    font-weight: bold;
+}
+
+.main-container {
+    max-width: 1000px;
+    margin: 20px auto;
+    padding: 20px;
+}
+
+.scroll-container {
+    width: 200px;
+    height: 80px;
+    overflow: hidden;
+    border: 2px solid #00ff00;
+    border-radius: 10px;
+    margin: 10px auto;
+    position: relative;
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.scroll-numbers {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
+
+.number-item {
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+    font-weight: bold;
+    color: #00ff00;
+    text-shadow: 0 0 10px #00ff00;
+    border-bottom: 1px solid #333;
+    width: 100%;
+    transition: all 0.3s ease;
+}
+
+.number-item.highlight {
+    background: gold;
+    color: #000;
+    font-size: 40px;
+    box-shadow: 0 0 20px gold;
+}
+
+button {
+    padding: 10px 20px;
+    background: linear-gradient(45deg, #00ff00, #00cc00);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    color: #000;
+    margin: 5px;
+}
+
+button:hover {
+    background: linear-gradient(45deg, #00cc00, #009900);
+}
+
+input[type="file"] {
+    display: none;
+}
+
+.profile-upload {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.profile-upload label {
+    background: #000;
+    color: #00ff00;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 12px;
+}
+
+.result-history,
+.bet-history,
+.leaderboard {
+    margin-top: 20px;
+    background: rgba(0, 0, 0, 0.8);
+    padding: 15px;
+    border-radius: 10px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.notification {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    background: rgba(0, 255, 0, 0.9);
+    color: #000;
+    padding: 10px 20px;
+    border-radius: 8px;
+    display: none;
+    font-weight: bold;
+    z-index: 2000;
+}
+
+.vip-badge {
+    background: gold;
+    color: #000;
+    padding: 2px 5px;
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: bold;
+}

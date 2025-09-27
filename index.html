@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lottery Home</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header>
+        <div class="clock" id="clock">00:00:00</div>
+        <div class="user-info">
+            <div class="profile-upload">
+                <img id="profileImg" src="https://via.placeholder.com/35" alt="Profile">
+                <label for="upload">Upload</label>
+                <input type="file" id="upload">
+            </div>
+            <span id="username">Guest</span>
+            <span id="balance">0 🪙</span>
+            <span id="vipBadge" class="vip-badge">VIP1</span>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <h2>2-Digit Lottery</h2>
+        <div class="scroll-container">
+            <div class="scroll-numbers" id="scroll2"></div>
+        </div>
+
+        <h2>3-Digit Lottery</h2>
+        <div class="scroll-container">
+            <div class="scroll-numbers" id="scroll3"></div>
+        </div>
+
+        <div class="result-history" id="resultHistory">
+            <h3>Result History</h3>
+        </div>
+
+        <div class="leaderboard" id="leaderboard">
+            <h3>Leaderboard</h3>
+        </div>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <script src="user.js"></script>
+    <script src="bets.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
