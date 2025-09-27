@@ -1,55 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Betting</title>
+    <title>Lottery System - Betting</title>
     <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-    <header>
-        <div class="clock" id="clock">00:00:00</div>
-        <div class="user-info">
-            <img id="profileImg" src="https://via.placeholder.com/35" alt="Profile">
-            <span id="username">Guest</span>
-            <span id="balance">0 🪙</span>
-            <span id="vipBadge" class="vip-badge">VIP1</span>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="betting.html">Betting</a>
+            <a href="balance.html">Balance</a>
+            <a href="leaderboard.html">Leaderboard</a>
+            <a href="login.html" id="loginLink">Login</a>
         </div>
-    </header>
+    </nav>
 
-    <div class="main-container">
+    <!-- Betting Page -->
+    <div class="betting-container">
         <h2>Place Your Bets</h2>
-        <div>
-            <label>Type:</label>
-            <select id="betType">
-                <option value="2D">2-Digit</option>
-                <option value="3D">3-Digit</option>
-            </select>
+        <div class="bet-form">
+            <div class="form-group">
+                <label for="betType">Bet Type</label>
+                <select id="betType">
+                    <option value="2D">2D Lottery</option>
+                    <option value="3D">3D Lottery</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="betNumber">Number</label>
+                <input type="number" id="betNumber" placeholder="Enter number" min="0" max="99">
+            </div>
+            <div class="form-group">
+                <label for="betCoins">Coins</label>
+                <input type="number" id="betCoins" placeholder="Bet amount" min="1">
+            </div>
+            <div class="form-group">
+                <button class="btn" onclick="placeBet()">Place Bet</button>
+            </div>
         </div>
-        <div>
-            <label>Number:</label>
-            <input type="number" id="betNumber" placeholder="Number">
-        </div>
-        <div>
-            <label>Coins:</label>
-            <input type="number" id="betAmount" placeholder="Coins">
-        </div>
-        <button onclick="placeBet(
-        document.getElementById('betType').value,
-        parseInt(document.getElementById('betNumber').value),
-        parseInt(document.getElementById('betAmount').value)
-    )">Place Bet</button>
 
-        <div class="bet-history">
-            <h3>Bet History</h3>
+        <h3>Bet History</h3>
+        <div class="bet-history" id="betHistory">
+            <!-- Bet history items will be added here -->
         </div>
     </div>
 
     <script src="user.js"></script>
     <script src="bets.js"></script>
-    <script src="script.js"></script>
+    <script>
+        // Check login and update UI
+        document.addEventListener('DOMContentLoaded', function() {
+            checkLoginStatus();
+            displayBetHistory();
+            
+            // Update bet number validation
+            document.getElementById('betType').addEventListener('change', function() {
+                const betNumber = document.getElementById('betNumber');
+                if (this.value === '2D') {
+                    betNumber.max = 99;
+                    betNumber.placeholder = 'Enter 2-digit number (0-99)';
+                } else {
+                    betNumber.max = 999;
+                    betNumber.placeholder = 'Enter 3-digit number (0-999)';
+                }
+            });
+        });
+    </script>
 </body>
-
 </html>
