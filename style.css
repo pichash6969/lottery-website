@@ -373,3 +373,37 @@ body {
 }
 
 .redeem-form {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.redeem-form input {
+    flex: 1;
+    padding: 0.8rem;
+    border: none;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    font-size: 1rem;
+}
+
+@media (max-width: 768px) {
+    .lottery-container {
+        flex-direction: column;
+    }
+    
+    .nav-links {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+    
+    .nav-links a {
+        font-size: 0.9rem;
+        padding: 0.4rem 0.8rem;
+    }
+    
+    .clock {
+        font-size: 1.5rem;
+    }
+}
