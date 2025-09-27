@@ -1,409 +1,230 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+// Global variables
+let resultHistory = JSON.parse(localStorage.getItem('resultHistory')) || [];
 
-body {
-    font-family: 'Arial', sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    min-height: 100vh;
-    color: white;
-}
+// Manual draw schedule
+const manualDraws = [
+    { time: '09:00:00', numbers: { '2D': '42', '3D': '123' } },
+    { time: '12:00:00', numbers: { '2D': '17', '3D': '456' } },
+    { time: '15:00:00', numbers: { '2D': '89', '3D': '789' } },
+    { time: '18:00:00', numbers: { '2D': '33', '3D': '012' } },
+    { time: '21:00:00', numbers: { '2D': '56', '3D': '345' } }
+];
 
-.navbar {
-    background: rgba(0, 0, 0, 0.3);
-    padding: 1rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    backdrop-filter: blur(10px);
-}
-
-.nav-links {
-    display: flex;
-    gap: 1rem;
-}
-
-.nav-links a {
-    color: white;
-    text-decoration: none;
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    background: rgba(255, 255, 255, 0.1);
-    transition: all 0.3s ease;
-}
-
-.nav-links a:hover {
-    background: rgba(255, 255, 255, 0.2);
-    transform: translateY(-2px);
-}
-
-.clock {
-    font-size: 2rem;
-    font-weight: bold;
-    text-align: center;
-    margin: 1rem 0;
-    background: rgba(0, 0, 0, 0.3);
-    padding: 1rem;
-    border-radius: 10px;
-    backdrop-filter: blur(10px);
-}
-
-.user-info {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    background: rgba(0, 0, 0, 0.3);
-    padding: 1rem;
-    border-radius: 10px;
-    margin: 1rem;
-    backdrop-filter: blur(10px);
-}
-
-.profile-image {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 3px solid #ffd700;
-}
-
-.vip-badge {
-    padding: 0.3rem 0.8rem;
-    border-radius: 15px;
-    font-size: 0.8rem;
-    font-weight: bold;
-}
-
-.vip1 { background: linear-gradient(45deg, #c0392b, #e74c3c); }
-.vip2 { background: linear-gradient(45deg, #d4af37, #ffd700); }
-.vip3 { background: linear-gradient(45deg, #8e44ad, #9b59b6); }
-
-.lottery-container {
-    display: flex;
-    gap: 2rem;
-    margin: 2rem;
-    flex-wrap: wrap;
-}
-
-.lottery-box {
-    flex: 1;
-    min-width: 300px;
-    background: rgba(0, 0, 0, 0.3);
-    border-radius: 15px;
-    padding: 1.5rem;
-    backdrop-filter: blur(10px);
-    position: relative;
-    overflow: hidden;
-}
-
-.lottery-title {
-    text-align: center;
-    font-size: 1.5rem;
-    font-weight: bold;
-    margin-bottom: 1rem;
-    color: #ffd700;
-}
-
-.scroll-container {
-    height: 150px;
-    overflow: hidden;
-    border: 2px solid #ffd700;
-    border-radius: 10px;
-    background: rgba(0, 0, 0, 0.5);
-    position: relative;
-}
-
-.scroll-numbers {
-    display: flex;
-    flex-direction: column;
-    animation: scroll 2s linear infinite;
-    font-size: 3rem;
-    font-weight: bold;
-    text-align: center;
-    line-height: 150px;
-}
-
-.scroll-numbers.stopped {
-    animation: none;
-}
-
-.winning-number {
-    color: #ffd700;
-    text-shadow: 0 0 20px #ffd700;
-}
-
-@keyframes scroll {
-    0% { transform: translateY(0); }
-    100% { transform: translateY(-150px); }
-}
-
-.manual-draw {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
-    padding: 1rem;
-    margin: 1rem 0;
-    border: 2px solid #ffd700;
-}
-
-.draw-time {
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: #ffd700;
-    margin-bottom: 0.5rem;
-}
-
-.draw-status {
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    font-weight: bold;
-    display: inline-block;
-    margin: 0.5rem 0;
-}
-
-.status-upcoming { background: #3498db; }
-.status-active { background: #e74c3c; animation: pulse 1s infinite; }
-.status-completed { background: #27ae60; }
-
-@keyframes pulse {
-    0% { opacity: 1; }
-    50% { opacity: 0.7; }
-    100% { opacity: 1; }
-}
-
-.history-box {
-    background: rgba(0, 0, 0, 0.3);
-    border-radius: 15px;
-    padding: 1.5rem;
-    margin: 2rem;
-    backdrop-filter: blur(10px);
-    max-height: 300px;
-    overflow-y: auto;
-}
-
-.history-item {
-    display: flex;
-    justify-content: space-between;
-    padding: 0.5rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-    margin-bottom: 0.5rem;
-}
-
-.notification {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background: rgba(0, 0, 0, 0.9);
-    color: white;
-    padding: 1rem;
-    border-radius: 10px;
-    border-left: 4px solid #ffd700;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-    transform: translateX(400px);
-    transition: transform 0.3s ease;
-    z-index: 1000;
-    max-width: 300px;
-}
-
-.notification.show {
-    transform: translateX(0);
-}
-
-.notification.success { border-left-color: #27ae60; }
-.notification.error { border-left-color: #e74c3c; }
-.notification.info { border-left-color: #3498db; }
-
-.balance-animation {
-    animation: balancePulse 0.5s ease;
-}
-
-@keyframes balancePulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.1); color: #ffd700; }
-    100% { transform: scale(1); }
-}
-
-.jackpot-animation {
-    animation: jackpot 2s ease-in-out;
-    position: relative;
-}
-
-@keyframes jackpot {
-    0% { transform: scale(1); }
-    25% { transform: scale(1.1); }
-    50% { transform: scale(1.2); box-shadow: 0 0 30px #ffd700; }
-    75% { transform: scale(1.1); }
-    100% { transform: scale(1); }
-}
-
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 1rem;
-}
-
-.btn {
-    background: linear-gradient(45deg, #667eea, #764ba2);
-    color: white;
-    border: none;
-    padding: 0.8rem 2rem;
-    border-radius: 25px;
-    cursor: pointer;
-    font-size: 1rem;
-    font-weight: bold;
-    transition: all 0.3s ease;
-    text-decoration: none;
-    display: inline-block;
-}
-
-.btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-}
-
-.login-container {
-    max-width: 400px;
-    margin: 5rem auto;
-    background: rgba(0, 0, 0, 0.3);
-    padding: 2rem;
-    border-radius: 15px;
-    backdrop-filter: blur(10px);
-}
-
-.form-group {
-    margin-bottom: 1rem;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-weight: bold;
-}
-
-.form-group input, .form-group select {
-    width: 100%;
-    padding: 0.8rem;
-    border: none;
-    border-radius: 8px;
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
-    font-size: 1rem;
-}
-
-.form-group input::placeholder {
-    color: rgba(255, 255, 255, 0.7);
-}
-
-.betting-container {
-    max-width: 800px;
-    margin: 2rem auto;
-    background: rgba(0, 0, 0, 0.3);
-    padding: 2rem;
-    border-radius: 15px;
-    backdrop-filter: blur(10px);
-}
-
-.bet-form {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
-    margin-bottom: 2rem;
-}
-
-.bet-history {
-    max-height: 400px;
-    overflow-y: auto;
-}
-
-.bet-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-    margin-bottom: 0.5rem;
-}
-
-.bet-status {
-    padding: 0.3rem 0.8rem;
-    border-radius: 15px;
-    font-size: 0.8rem;
-    font-weight: bold;
-}
-
-.status-win { background: #27ae60; }
-.status-lose { background: #e74c3c; }
-.status-pending { background: #f39c12; }
-
-.leaderboard {
-    max-width: 600px;
-    margin: 2rem auto;
-    background: rgba(0, 0, 0, 0.3);
-    border-radius: 15px;
-    padding: 2rem;
-    backdrop-filter: blur(10px);
-}
-
-.leaderboard-item {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 1rem;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-    margin-bottom: 0.5rem;
-}
-
-.rank {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #ffd700;
-    min-width: 40px;
-}
-
-.balance-page {
-    max-width: 600px;
-    margin: 2rem auto;
-    background: rgba(0, 0, 0, 0.3);
-    border-radius: 15px;
-    padding: 2rem;
-    backdrop-filter: blur(10px);
-}
-
-.redeem-form {
-    display: flex;
-    gap: 1rem;
-    margin-top: 2rem;
-}
-
-.redeem-form input {
-    flex: 1;
-    padding: 0.8rem;
-    border: none;
-    border-radius: 8px;
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
-    font-size: 1rem;
-}
-
-@media (max-width: 768px) {
-    .lottery-container {
-        flex-direction: column;
-    }
+// Initialize
+document.addEventListener('DOMContentLoaded', function() {
+    updateClock();
+    setInterval(updateClock, 1000);
     
-    .nav-links {
-        flex-wrap: wrap;
-        gap: 0.5rem;
+    if (window.location.pathname.includes('index.html') || window.location.pathname === '/') {
+        startLotteryAnimation();
+        checkManualDraws();
+        setInterval(checkManualDraws, 1000);
+        displayResultHistory();
     }
+});
+
+// Clock function
+function updateClock() {
+    const now = new Date();
+    const timeString = now.toLocaleTimeString('en-US', { hour12: false });
+    const clockElement = document.getElementById('clock');
+    if (clockElement) {
+        clockElement.textContent = timeString;
+    }
+}
+
+// Lottery animation
+function startLotteryAnimation() {
+    const scroll2D = document.getElementById('scroll2D');
+    const scroll3D = document.getElementById('scroll3D');
+
+    if (scroll2D) {
+        let numbers2D = '';
+        for (let i = 0; i < 20; i++) {
+            const num = Math.floor(Math.random() * 100).toString().padStart(2, '0');
+            numbers2D += `<div>${num}</div>`;
+        }
+        scroll2D.innerHTML = numbers2D;
+    }
+
+    if (scroll3D) {
+        let numbers3D = '';
+        for (let i = 0; i < 20; i++) {
+            const num = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+            numbers3D += `<div>${num}</div>`;
+        }
+        scroll3D.innerHTML = numbers3D;
+    }
+}
+
+// Manual draws
+function checkManualDraws() {
+    const now = new Date();
+    const currentTime = now.toTimeString().split(' ')[0];
+
+    manualDraws.forEach((draw) => {
+        const drawTime = new Date();
+        const [hours, minutes, seconds] = draw.time.split(':');
+        drawTime.setHours(parseInt(hours), parseInt(minutes), parseInt(seconds), 0);
+
+        const timeDiff = drawTime.getTime() - now.getTime();
+
+        if (timeDiff > 0 && timeDiff <= 60000) {
+            // Draw starting in next minute
+            updateDrawStatus('upcoming', draw.time, '--', '--');
+        } else if (timeDiff <= 0 && timeDiff > -30000) {
+            // Draw is active (30 seconds)
+            updateDrawStatus('active', draw.time, draw.numbers['2D'], draw.numbers['3D']);
+            stopScrollAnimation();
+            playDrawSound();
+        } else if (timeDiff <= -30000 && timeDiff > -60000) {
+            // Draw completed
+            updateDrawStatus('completed', draw.time, draw.numbers['2D'], draw.numbers['3D']);
+            addToResultHistory(draw.numbers['2D'], draw.numbers['3D'], draw.time);
+            if (typeof checkBetsForWinLoss === 'function') {
+                checkBetsForWinLoss(draw.numbers);
+            }
+        } else {
+            // Find next draw
+            const nextDraw = getNextDraw();
+            if (nextDraw) {
+                updateDrawStatus('upcoming', nextDraw.time, '--', '--');
+                startLotteryAnimation();
+            }
+        }
+    });
+}
+
+function getNextDraw() {
+    const now = new Date();
+    const currentTime = now.toTimeString().split(' ')[0];
+
+    for (let draw of manualDraws) {
+        if (draw.time > currentTime) {
+            return draw;
+        }
+    }
+    return manualDraws[0];
+}
+
+function updateDrawStatus(status, time, number2D, number3D) {
+    const manual2D = document.getElementById('manual2D');
+    const manual3D = document.getElementById('manual3D');
+
+    if (manual2D) {
+        const drawTime = manual2D.querySelector('.draw-time');
+        const drawStatus = manual2D.querySelector('.draw-status');
+        const winningNumber = manual2D.querySelector('.winning-number');
+
+        if (drawTime) drawTime.textContent = status === 'upcoming' ? `Next Draw: ${time}` : `Draw Time: ${time}`;
+        if (drawStatus) {
+            drawStatus.textContent = status.charAt(0).toUpperCase() + status.slice(1);
+            drawStatus.className = `draw-status status-${status}`;
+        }
+        if (winningNumber) winningNumber.textContent = number2D;
+    }
+
+    if (manual3D) {
+        const drawTime = manual3D.querySelector('.draw-time');
+        const drawStatus = manual3D.querySelector('.draw-status');
+        const winningNumber = manual3D.querySelector('.winning-number');
+
+        if (drawTime) drawTime.textContent = status === 'upcoming' ? `Next Draw: ${time}` : `Draw Time: ${time}`;
+        if (drawStatus) {
+            drawStatus.textContent = status.charAt(0).toUpperCase() + status.slice(1);
+            drawStatus.className = `draw-status status-${status}`;
+        }
+        if (winningNumber) winningNumber.textContent = number3D;
+    }
+}
+
+function stopScrollAnimation() {
+    const scroll2D = document.getElementById('scroll2D');
+    const scroll3D = document.getElementById('scroll3D');
+
+    if (scroll2D) scroll2D.classList.add('stopped');
+    if (scroll3D) scroll3D.classList.add('stopped');
+
+    setTimeout(() => {
+        if (scroll2D) scroll2D.classList.remove('stopped');
+        if (scroll3D) scroll3D.classList.remove('stopped');
+        startLotteryAnimation();
+    }, 5000);
+}
+
+function playDrawSound() {
+    try {
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+
+        oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+        oscillator.frequency.setValueAtTime(400, audioContext.currentTime + 0.1);
+        
+        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + 0.5);
+    } catch (e) {
+        console.log('Audio not supported');
+    }
+}
+
+// Result history
+function addToResultHistory(number2D, number3D, time) {
+    const result = {
+        '2D': number2D,
+        '3D': number3D,
+        time: time,
+        timestamp: new Date().toISOString()
+    };
+
+    resultHistory.unshift(result);
+    if (resultHistory.length > 50) {
+        resultHistory = resultHistory.slice(0, 50);
+    }
+
+    localStorage.setItem('resultHistory', JSON.stringify(resultHistory));
+    displayResultHistory();
+}
+
+function displayResultHistory() {
+    const historyContainer = document.getElementById('resultHistory');
+    if (!historyContainer) return;
+
+    historyContainer.innerHTML = '';
+
+    resultHistory.slice(0, 10).forEach(result => {
+        const historyItem = document.createElement('div');
+        historyItem.className = 'history-item';
+        historyItem.innerHTML = `
+            <span>2D: ${result['2D']} | 3D: ${result['3D']}</span>
+            <span>${result.time}</span>
+        `;
+        historyContainer.appendChild(historyItem);
+    });
+
+    if (resultHistory.length === 0) {
+        historyContainer.innerHTML = '<div class="history-item"><span>No results yet</span></div>';
+    }
+}
+
+// Notifications
+function showNotification(message, type = 'info') {
+    const notification = document.getElementById('notification');
+    const notificationMessage = document.getElementById('notificationMessage');
     
-    .nav-links a {
-        font-size: 0.9rem;
-        padding: 0.4rem 0.8rem;
-    }
-    
-    .clock {
-        font-size: 1.5rem;
-    }
+    if (!notification || !notificationMessage) return;
+
+    notificationMessage.textContent = message;
+    notification.className = `notification ${type}`;
+    notification.classList.add('show');
+
+    setTimeout(() => {
+        notification.classList.remove('show');
+    }, 3000);
 }
