@@ -1,46 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Leaderboard</title>
+    <title>Lottery System - Leaderboard</title>
     <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-    <header>
-        <div class="clock" id="clock">00:00:00</div>
-        <div class="user-info">
-            <img id="profileImg" src="https://via.placeholder.com/35" alt="Profile">
-            <span id="username">Guest</span>
-            <span id="balance">0 🪙</span>
-            <span id="vipBadge" class="vip-badge">VIP1</span>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="betting.html">Betting</a>
+            <a href="balance.html">Balance</a>
+            <a href="leaderboard.html">Leaderboard</a>
+            <a href="login.html" id="loginLink">Login</a>
         </div>
-    </header>
+    </nav>
 
-    <div class="main-container">
-        <h2>Leaderboard</h2>
-        <div class="leaderboard" id="leaderboardContainer">
-            <h3>Top Users</h3>
+    <!-- Leaderboard Page -->
+    <div class="leaderboard">
+        <h2 style="text-align: center; margin-bottom: 2rem;">🏆 Leaderboard</h2>
+        <div id="leaderboardList">
+            <!-- Leaderboard items will be added here -->
         </div>
     </div>
 
     <script src="user.js"></script>
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            checkLoginStatus();
+            updateLeaderboard();
+            setInterval(updateLeaderboard, 2000); // Update every 2 seconds
+        });
+
         function updateLeaderboard() {
-            let allUsers = JSON.parse(localStorage.getItem('users')) || {};
-            const container = document.getElementById('leaderboardContainer');
-            container.innerHTML = '<h3>Top Users</h3>';
-            Object.values(allUsers).sort((a, b) => b.balance - a.balance).forEach(user => {
-                const div = document.createElement('div');
-                div.textContent = `${user.username} - ${user.balance} 🪙 - ${user.vipLevel}`;
-                container.appendChild(div);
+            const leaderboardList = document.getElementById('leaderboardList');
+            if (!leaderboardList) return;
+
+            const users = JSON.parse(localStorage.getItem('users')) || {};
+            
+            // Sort users by balance
+            const sortedUsers = Object.entries(users)
+                .sort(([,a], [,b]) => b.balance - a.balance)
+                .slice(0, 10);
+
+            leaderboardList.innerHTML = '';
+
+            sortedUsers.forEach(([username, user], index) => {
+                const leaderboardItem = document.createElement('div');
+                leaderboardItem.className = 'leaderboard-item';
+                
+                const rank = index + 1;
+                const rankEmoji = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : rank;
+                
+                leaderboardItem.innerHTML = `
+                    <div class="rank">${rankEmoji}</div>
+                    <img src="${user.profileImage}" alt="Profile" class="profile-image" style="width: 50px; height: 50px;">
+                    <div style="flex: 1;">
+                        <strong>${username}</strong>
+                        <div>${user.balance} coins</div>
+                    </div>
+                    <span class="vip-badge vip${user.vip}">VIP${user.vip}</span>
+                `;
+                leaderboardList.appendChild(leaderboardItem);
             });
+
+            if (sortedUsers.length === 0) {
+                leaderboardList.innerHTML = '<div class="leaderboard-item"><span>No users yet</span></div>';
+            }
         }
-        setInterval(updateLeaderboard, 2000);
-        updateLeaderboard();
     </script>
 </body>
-
 </html>
