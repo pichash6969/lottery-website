@@ -1,157 +1,409 @@
-/* style.css - Common Styles */
-body {
-    font-family: 'Courier New', monospace;
+* {
     margin: 0;
     padding: 0;
-    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-    color: #00ff00;
+    box-sizing: border-box;
 }
 
-header {
+body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    color: white;
+}
+
+.navbar {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 1rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 20px;
-    background: rgba(0, 0, 0, 0.8);
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
 }
 
-header .clock {
-    font-size: 20px;
+.nav-links {
+    display: flex;
+    gap: 1rem;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.nav-links a:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+.clock {
+    font-size: 2rem;
     font-weight: bold;
+    text-align: center;
+    margin: 1rem 0;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 1rem;
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
 }
 
-header .user-info {
+.user-info {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 1rem;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 1rem;
+    border-radius: 10px;
+    margin: 1rem;
+    backdrop-filter: blur(10px);
 }
 
-header .user-info img {
-    width: 35px;
-    height: 35px;
+.profile-image {
+    width: 60px;
+    height: 60px;
     border-radius: 50%;
-    border: 2px solid #00ff00;
+    object-fit: cover;
+    border: 3px solid #ffd700;
 }
 
-header .user-info span {
+.vip-badge {
+    padding: 0.3rem 0.8rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
     font-weight: bold;
 }
 
-.main-container {
-    max-width: 1000px;
-    margin: 20px auto;
-    padding: 20px;
+.vip1 { background: linear-gradient(45deg, #c0392b, #e74c3c); }
+.vip2 { background: linear-gradient(45deg, #d4af37, #ffd700); }
+.vip3 { background: linear-gradient(45deg, #8e44ad, #9b59b6); }
+
+.lottery-container {
+    display: flex;
+    gap: 2rem;
+    margin: 2rem;
+    flex-wrap: wrap;
+}
+
+.lottery-box {
+    flex: 1;
+    min-width: 300px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 15px;
+    padding: 1.5rem;
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+}
+
+.lottery-title {
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    color: #ffd700;
 }
 
 .scroll-container {
-    width: 200px;
-    height: 80px;
+    height: 150px;
     overflow: hidden;
-    border: 2px solid #00ff00;
+    border: 2px solid #ffd700;
     border-radius: 10px;
-    margin: 10px auto;
+    background: rgba(0, 0, 0, 0.5);
     position: relative;
-    background: #000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 .scroll-numbers {
     display: flex;
     flex-direction: column;
-    position: absolute;
-    top: 0;
-    width: 100%;
-}
-
-.number-item {
-    height: 80px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 36px;
+    animation: scroll 2s linear infinite;
+    font-size: 3rem;
     font-weight: bold;
-    color: #00ff00;
-    text-shadow: 0 0 10px #00ff00;
-    border-bottom: 1px solid #333;
-    width: 100%;
-    transition: all 0.3s ease;
+    text-align: center;
+    line-height: 150px;
 }
 
-.number-item.highlight {
-    background: gold;
-    color: #000;
-    font-size: 40px;
-    box-shadow: 0 0 20px gold;
+.scroll-numbers.stopped {
+    animation: none;
 }
 
-button {
-    padding: 10px 20px;
-    background: linear-gradient(45deg, #00ff00, #00cc00);
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: bold;
-    color: #000;
-    margin: 5px;
+.winning-number {
+    color: #ffd700;
+    text-shadow: 0 0 20px #ffd700;
 }
 
-button:hover {
-    background: linear-gradient(45deg, #00cc00, #009900);
+@keyframes scroll {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-150px); }
 }
 
-input[type="file"] {
-    display: none;
-}
-
-.profile-upload {
-    position: relative;
-    display: inline-block;
-    cursor: pointer;
-}
-
-.profile-upload label {
-    background: #000;
-    color: #00ff00;
-    padding: 5px 10px;
-    border-radius: 5px;
-    font-size: 12px;
-}
-
-.result-history,
-.bet-history,
-.leaderboard {
-    margin-top: 20px;
-    background: rgba(0, 0, 0, 0.8);
-    padding: 15px;
+.manual-draw {
+    background: rgba(255, 255, 255, 0.1);
     border-radius: 10px;
+    padding: 1rem;
+    margin: 1rem 0;
+    border: 2px solid #ffd700;
+}
+
+.draw-time {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #ffd700;
+    margin-bottom: 0.5rem;
+}
+
+.draw-status {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: bold;
+    display: inline-block;
+    margin: 0.5rem 0;
+}
+
+.status-upcoming { background: #3498db; }
+.status-active { background: #e74c3c; animation: pulse 1s infinite; }
+.status-completed { background: #27ae60; }
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.7; }
+    100% { opacity: 1; }
+}
+
+.history-box {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 15px;
+    padding: 1.5rem;
+    margin: 2rem;
+    backdrop-filter: blur(10px);
     max-height: 300px;
     overflow-y: auto;
 }
 
-.notification {
-    position: fixed;
-    top: 80px;
-    right: 20px;
-    background: rgba(0, 255, 0, 0.9);
-    color: #000;
-    padding: 10px 20px;
-    border-radius: 8px;
-    display: none;
-    font-weight: bold;
-    z-index: 2000;
+.history-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    margin-bottom: 0.5rem;
 }
 
-.vip-badge {
-    background: gold;
-    color: #000;
-    padding: 2px 5px;
-    border-radius: 3px;
-    font-size: 12px;
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 1rem;
+    border-radius: 10px;
+    border-left: 4px solid #ffd700;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    transform: translateX(400px);
+    transition: transform 0.3s ease;
+    z-index: 1000;
+    max-width: 300px;
+}
+
+.notification.show {
+    transform: translateX(0);
+}
+
+.notification.success { border-left-color: #27ae60; }
+.notification.error { border-left-color: #e74c3c; }
+.notification.info { border-left-color: #3498db; }
+
+.balance-animation {
+    animation: balancePulse 0.5s ease;
+}
+
+@keyframes balancePulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); color: #ffd700; }
+    100% { transform: scale(1); }
+}
+
+.jackpot-animation {
+    animation: jackpot 2s ease-in-out;
+    position: relative;
+}
+
+@keyframes jackpot {
+    0% { transform: scale(1); }
+    25% { transform: scale(1.1); }
+    50% { transform: scale(1.2); box-shadow: 0 0 30px #ffd700; }
+    75% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.btn {
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    padding: 0.8rem 2rem;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 1rem;
     font-weight: bold;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.login-container {
+    max-width: 400px;
+    margin: 5rem auto;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 2rem;
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+}
+
+.form-group input, .form-group select {
+    width: 100%;
+    padding: 0.8rem;
+    border: none;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    font-size: 1rem;
+}
+
+.form-group input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.betting-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 2rem;
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+}
+
+.bet-form {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.bet-history {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.bet-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+}
+
+.bet-status {
+    padding: 0.3rem 0.8rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.status-win { background: #27ae60; }
+.status-lose { background: #e74c3c; }
+.status-pending { background: #f39c12; }
+
+.leaderboard {
+    max-width: 600px;
+    margin: 2rem auto;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 15px;
+    padding: 2rem;
+    backdrop-filter: blur(10px);
+}
+
+.leaderboard-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+}
+
+.rank {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #ffd700;
+    min-width: 40px;
+}
+
+.balance-page {
+    max-width: 600px;
+    margin: 2rem auto;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 15px;
+    padding: 2rem;
+    backdrop-filter: blur(10px);
+}
+
+.redeem-form {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.redeem-form input {
+    flex: 1;
+    padding: 0.8rem;
+    border: none;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    font-size: 1rem;
+}
+
+@media (max-width: 768px) {
+    .lottery-container {
+        flex-direction: column;
+    }
+    
+    .nav-links {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+    
+    .nav-links a {
+        font-size: 0.9rem;
+        padding: 0.4rem 0.8rem;
+    }
+    
+    .clock {
+        font-size: 1.5rem;
+    }
 }
